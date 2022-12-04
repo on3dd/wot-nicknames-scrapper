@@ -8,10 +8,6 @@ import (
 	"github.com/on3dd/wot-nicknames-scrapper/utils"
 )
 
-// Typical delimiters from most common to least common.
-// For example, string "MaJleHbKuu_MaJlbuK" contains 2 words separated by "_".
-var SEPARATORS = []string{" ", "_", "-", "."}
-
 func GetNicknames(e *colly.HTMLElement) []string {
 	nicknames := make([]string, 0)
 
@@ -36,7 +32,7 @@ func ParseLexemes(words []string) []string {
 }
 
 func stringToTokens(word string) []string {
-	for _, sep := range SEPARATORS {
+	for _, sep := range utils.Separators {
 		if strings.Contains(word, sep) {
 			return strings.Split(word, sep)
 		}
