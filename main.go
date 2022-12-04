@@ -17,7 +17,12 @@ func main() {
 	words := make([]string, 0)
 
 	c.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
-		part := parser.GetNicknames(e)
+		part := parser.ExtractNicknamesFromUl(e)
+		words = append(words, part...)
+	})
+
+	c.OnHTML("h2 ~ p", func(e *colly.HTMLElement) {
+		part := parser.ExtractNicknamesFromParagraph(e)
 		words = append(words, part...)
 	})
 
@@ -29,7 +34,7 @@ func main() {
 		generateTestData(lexemes, 10)
 	})
 
-	c.Visit("https://conterfrag.ru/niki-dlya-world-of-tanks")
+	c.Visit("https://conterfrag.ru/niki-dlya-tanki-onlayn")
 }
 
 func generateTestData(lexemes []string, iterationsNum int) {

@@ -8,14 +8,18 @@ import (
 	"github.com/on3dd/wot-nicknames-scrapper/utils"
 )
 
-func GetNicknames(e *colly.HTMLElement) []string {
-	nicknames := make([]string, 0)
+func ExtractNicknamesFromUl(e *colly.HTMLElement) []string {
+	words := make([]string, 0)
 
 	e.ForEach("li", func(_ int, li *colly.HTMLElement) {
-		nicknames = append(nicknames, li.Text)
+		words = append(words, li.Text)
 	})
 
-	return nicknames
+	return words
+}
+
+func ExtractNicknamesFromParagraph(e *colly.HTMLElement) []string {
+	return strings.Split(e.Text, "\n")
 }
 
 func ParseLexemes(words []string) []string {
