@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gocolly/colly"
+
+	"github.com/on3dd/wot-nicknames-scrapper/parser"
 )
 
 func main() {
@@ -11,29 +13,18 @@ func main() {
 		colly.AllowedDomains("conterfrag.ru"),
 	)
 
-	count := 0
-	total := make([]string, 0)
+	words := make([]string, 0)
 
 	c.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
-		count += 1
-		part := parseNicknames(e)
-		total = append(total, part...)
+		part := parser.GetNicknames(e)
+		words = append(words, part...)
 	})
 
 	c.OnScraped(func(r *colly.Response) {
-		fmt.Printf("Total length: %d \n", len(total))
-		fmt.Printf("Sections count: %d \n", count)
+		lexemes := parser.ParseLexemes(words)
+		fmt.Printf("Words length: %d \n", len(words))
+		fmt.Printf("Lexemes length: %d \n", len(lexemes))
 	})
 
 	c.Visit("https://conterfrag.ru/niki-dlya-world-of-tanks")
-}
-
-func parseNicknames(e *colly.HTMLElement) []string {
-	nicknames := make([]string, 0)
-
-	e.ForEach("li", func(_ int, li *colly.HTMLElement) {
-		nicknames = append(nicknames, li.Text)
-	})
-
-	return nicknames
 }
