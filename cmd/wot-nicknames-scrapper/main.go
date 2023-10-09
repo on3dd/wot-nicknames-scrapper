@@ -5,8 +5,8 @@ import (
 
 	"github.com/gocolly/colly"
 
-	"github.com/on3dd/wot-nicknames-scrapper/gen"
-	"github.com/on3dd/wot-nicknames-scrapper/parser"
+	"github.com/on3dd/wot-nicknames-scrapper/internal/gen"
+	"github.com/on3dd/wot-nicknames-scrapper/internal/parser"
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 }
 
 func generateTestData(lexemes []string, iterationsNum int) {
-	for i := 0; i <= iterationsNum; i++ {
+	for i := 0; i < iterationsNum; i++ {
 		fmt.Printf("Nickname %d: %s \n", i+1, gen.GenerateNickname(lexemes))
 	}
 }

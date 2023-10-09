@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gocolly/colly"
-	"github.com/on3dd/wot-nicknames-scrapper/utils"
+	"github.com/on3dd/wot-nicknames-scrapper/pkg/utils"
 )
 
 func ExtractNicknamesFromUl(e *colly.HTMLElement) []string {

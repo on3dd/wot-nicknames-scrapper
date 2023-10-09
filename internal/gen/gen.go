@@ -3,7 +3,7 @@ package gen
 import (
 	"strings"
 
-	"github.com/on3dd/wot-nicknames-scrapper/utils"
+	"github.com/on3dd/wot-nicknames-scrapper/pkg/utils"
 )
 
 func GenerateNickname(lexemes []string) string {
