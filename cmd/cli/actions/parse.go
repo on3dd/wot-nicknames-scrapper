@@ -10,19 +10,15 @@ import (
 )
 
 func Parse(cCtx *cli.Context) error {
-	fileUrl := cCtx.String("file")
-
-	if cCtx.NArg() > 0 {
-		fileUrl = cCtx.Args().First()
-	}
-
 	parserInstance := parser.Init()
 
 	parserInstance.Parse()
 
 	words := <-parserInstance.Words
 
-	file, err := os.OpenFile(fileUrl, os.O_RDWR|os.O_CREATE, 0755)
+	fileUrl := cCtx.String("file")
+
+	file, err := os.OpenFile(fileUrl, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		return err
@@ -31,8 +27,6 @@ func Parse(cCtx *cli.Context) error {
 	if err := writer.Write(words, file); err != nil {
 		return err
 	}
-
-	// gen.GenerateTestData(words, 10)
 
 	return nil
 }
