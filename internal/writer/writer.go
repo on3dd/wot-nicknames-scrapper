@@ -4,7 +4,7 @@ import (
 	"encoding/csv"
 	"io"
 
-	"github.com/on3dd/wot-nicknames-scrapper/internal/utils"
+	"github.com/on3dd/wot-nicknames-scrapper/pkg/utils"
 )
 
 func Write(data []string, w io.Writer) error {

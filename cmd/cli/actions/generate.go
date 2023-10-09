@@ -3,7 +3,8 @@ package actions
 import (
 	"github.com/on3dd/wot-nicknames-scrapper/internal/gen"
 	"github.com/on3dd/wot-nicknames-scrapper/internal/reader"
-	"github.com/on3dd/wot-nicknames-scrapper/internal/utils"
+	"github.com/on3dd/wot-nicknames-scrapper/pkg/utils"
+
 	"github.com/urfave/cli/v2"
 )
 
