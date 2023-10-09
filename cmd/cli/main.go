@@ -10,18 +10,31 @@ import (
 
 func main() {
 	app := &cli.App{
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "file",
+				Aliases: []string{"f"},
+				Value:   "./assets/data.csv",
+				Usage:   "Path to the dataset file",
+			},
+		},
 		Name: "wot-nicknames-scrapper",
 		Commands: []*cli.Command{
 			{
 				Name:   "parse",
-				Usage:  "Parse nicknames from website and write them to \"/assets/data.csv\"",
+				Usage:  "Parse nicknames from website and write them to provided file",
 				Action: actions.Parse,
+			},
+			{
+				Name:   "generate",
+				Usage:  "Generate nicknames from dataset from provided file",
+				Action: actions.Generate,
 				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:    "file",
-						Aliases: []string{"f"},
-						Value:   "./assets/data.csv",
-						Usage:   "Path to the dataset file",
+					&cli.IntFlag{
+						Name:    "count",
+						Aliases: []string{"c"},
+						Value:   10,
+						Usage:   "Number of nicknames to generate",
 					},
 				},
 			},
