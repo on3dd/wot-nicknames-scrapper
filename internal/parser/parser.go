@@ -1,46 +1,48 @@
 package parser
 
 import (
-	"sort"
-	"strings"
+	"fmt"
 
 	"github.com/gocolly/colly"
-	"github.com/on3dd/wot-nicknames-scrapper/pkg/utils"
+
+	"github.com/on3dd/wot-nicknames-scrapper/internal/parser/pkg/nicknames"
 )
 
-func ExtractNicknamesFromUl(e *colly.HTMLElement) []string {
+type Parser struct {
+	Words     chan []string
+	collector *colly.Collector
+}
+
+func Init() *Parser {
+	return &Parser{
+		Words: make(chan []string, 1),
+		collector: colly.NewCollector(
+			colly.AllowedDomains("conterfrag.ru"),
+		),
+	}
+}
+
+func (p *Parser) Parse() {
 	words := make([]string, 0)
 
-	e.ForEach("li", func(_ int, li *colly.HTMLElement) {
-		words = append(words, li.Text)
+	p.collector.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
+		part := nicknames.ExtractNicknamesFromUl(e)
+		words = append(words, part...)
 	})
 
-	return words
-}
+	p.collector.OnHTML("h2 ~ p", func(e *colly.HTMLElement) {
+		part := nicknames.ExtractNicknamesFromParagraph(e)
+		words = append(words, part...)
+	})
 
-func ExtractNicknamesFromParagraph(e *colly.HTMLElement) []string {
-	return strings.Split(e.Text, "\n")
-}
+	p.collector.OnScraped(func(r *colly.Response) {
+		lexemes := nicknames.ParseLexemes(words)
 
-func ParseLexemes(words []string) []string {
-	lexemes := make([]string, 0)
+		fmt.Printf("Words length: %d \n", len(words))
+		fmt.Printf("Lexemes length: %d \n", len(lexemes))
 
-	for _, word := range words {
-		tokens := stringToTokens(word)
-		lexemes = append(lexemes, tokens...)
-	}
+		p.Words <- words
+	})
 
-	sort.Strings(lexemes)
-
-	return utils.Unique(lexemes)
-}
-
-func stringToTokens(word string) []string {
-	for _, sep := range utils.Separators {
-		if strings.Contains(word, sep) {
-			return strings.Split(word, sep)
-		}
-	}
-
-	return []string{word}
+	p.collector.Visit("https://conterfrag.ru/niki-dlya-tanki-onlayn")
 }
