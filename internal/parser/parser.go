@@ -23,25 +23,25 @@ func Init() *Parser {
 }
 
 func (p *Parser) Parse() {
-	words := make([]string, 0)
+	names := make([]string, 0)
 
 	p.collector.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
 		part := nicknames.ExtractNicknamesFromUl(e)
-		words = append(words, part...)
+		names = append(names, part...)
 	})
 
 	p.collector.OnHTML("h2 ~ p", func(e *colly.HTMLElement) {
 		part := nicknames.ExtractNicknamesFromParagraph(e)
-		words = append(words, part...)
+		names = append(names, part...)
 	})
 
 	p.collector.OnScraped(func(r *colly.Response) {
-		lexemes := nicknames.ParseLexemes(words)
+		lexemes := nicknames.ParseLexemes(names)
 
-		fmt.Printf("Words length: %d \n", len(words))
+		fmt.Printf("Nicknames length: %d \n", len(names))
 		fmt.Printf("Lexemes length: %d \n", len(lexemes))
 
-		p.Words <- words
+		p.Words <- lexemes
 	})
 
 	p.collector.Visit("https://conterfrag.ru/niki-dlya-tanki-onlayn")

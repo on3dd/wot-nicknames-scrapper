@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/on3dd/wot-nicknames-scrapper/internal/gen"
 	"github.com/on3dd/wot-nicknames-scrapper/internal/parser"
+	"github.com/on3dd/wot-nicknames-scrapper/internal/writer"
 )
 
 func main() {
@@ -12,10 +13,11 @@ func main() {
 
 	parserInstance.Parse()
 
-	select {
-	case words := <-parserInstance.Words:
-		gen.GenerateTestData(words, 10)
-	default:
-		fmt.Println("Waiting for response...")
-	}
+	words := <-parserInstance.Words
+
+	file, _ := os.OpenFile("./assets/data.csv", os.O_RDWR|os.O_CREATE, 0755)
+
+	writer.Write(words, file)
+
+	gen.GenerateTestData(words, 10)
 }
