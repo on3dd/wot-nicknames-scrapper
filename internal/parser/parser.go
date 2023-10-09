@@ -26,13 +26,13 @@ func (p *Parser) Parse() {
 	names := make([]string, 0)
 
 	p.collector.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
-		part := nicknames.ExtractNicknamesFromUl(e)
-		names = append(names, part...)
+		parts := nicknames.ExtractNicknamesFromUl(e)
+		names = append(names, parts...)
 	})
 
 	p.collector.OnHTML("h2 ~ p", func(e *colly.HTMLElement) {
-		part := nicknames.ExtractNicknamesFromParagraph(e)
-		names = append(names, part...)
+		parts := nicknames.ExtractNicknamesFromParagraph(e)
+		names = append(names, parts...)
 	})
 
 	p.collector.OnScraped(func(r *colly.Response) {

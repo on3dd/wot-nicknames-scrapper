@@ -1,6 +1,7 @@
 package nicknames
 
 import (
+	"slices"
 	"sort"
 	"strings"
 
@@ -25,8 +26,11 @@ func ExtractNicknamesFromParagraph(e *colly.HTMLElement) []string {
 func ParseLexemes(words []string) []string {
 	lexemes := make([]string, 0)
 
-	for _, word := range words {
+	filtered := filterWords(words)
+
+	for _, word := range filtered {
 		tokens := stringToTokens(word)
+
 		lexemes = append(lexemes, tokens...)
 	}
 
@@ -35,10 +39,35 @@ func ParseLexemes(words []string) []string {
 	return utils.Unique(lexemes)
 }
 
+func filterWords(words []string) []string {
+	filtered := make([]string, 0)
+
+	for _, item := range words {
+		// Skip blacklisted items
+		if slices.Contains(utils.BlacklistedItems, item) {
+			continue
+		}
+
+		filtered = append(filtered, item)
+	}
+
+	return filtered
+}
+
 func stringToTokens(word string) []string {
 	for _, sep := range utils.Separators {
 		if strings.Contains(word, sep) {
-			return strings.Split(word, sep)
+			tokens := strings.Split(word, sep)
+
+			result := make([]string, 0)
+
+			for _, token := range tokens {
+				if len(token) > 1 {
+					result = append(result, token)
+				}
+			}
+
+			return result
 		}
 	}
 

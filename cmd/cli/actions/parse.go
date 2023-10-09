@@ -18,7 +18,7 @@ func Parse(cCtx *cli.Context) error {
 
 	fileUrl := cCtx.String("file")
 
-	file, err := os.OpenFile(fileUrl, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.Create(fileUrl)
 
 	if err != nil {
 		return err
