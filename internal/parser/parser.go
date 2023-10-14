@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gocolly/colly"
-
-	"github.com/on3dd/wot-nicknames-scrapper/internal/parser/pkg/nicknames"
+	"github.com/on3dd/wot-nicknames-scrapper/internal/parser/pkg/extract"
+	"github.com/on3dd/wot-nicknames-scrapper/internal/parser/pkg/lexemes"
 )
 
 type Parser struct {
@@ -22,27 +22,30 @@ func Init() *Parser {
 	}
 }
 
-func (p *Parser) Parse() {
+func (p *Parser) Parse() []string {
 	names := make([]string, 0)
+	result := make(chan []string, 1)
 
 	p.collector.OnHTML("h2 ~ ul", func(e *colly.HTMLElement) {
-		parts := nicknames.ExtractNicknamesFromUl(e)
+		parts := extract.ExtractNicknamesFromUl(e)
 		names = append(names, parts...)
 	})
 
 	p.collector.OnHTML("h2 ~ p", func(e *colly.HTMLElement) {
-		parts := nicknames.ExtractNicknamesFromParagraph(e)
+		parts := extract.ExtractNicknamesFromParagraph(e)
 		names = append(names, parts...)
 	})
 
 	p.collector.OnScraped(func(r *colly.Response) {
-		lexemes := nicknames.ParseLexemes(names)
+		items := lexemes.ParseLexemes(names)
 
 		fmt.Printf("Nicknames length: %d \n", len(names))
-		fmt.Printf("Lexemes length: %d \n", len(lexemes))
+		fmt.Printf("Lexemes length: %d \n", len(items))
 
-		p.Words <- lexemes
+		result <- items
 	})
 
 	p.collector.Visit("https://conterfrag.ru/niki-dlya-tanki-onlayn")
+
+	return <-result
 }

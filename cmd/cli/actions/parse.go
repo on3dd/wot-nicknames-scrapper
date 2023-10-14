@@ -11,13 +11,9 @@ import (
 
 func Parse(cCtx *cli.Context) error {
 	parserInstance := parser.Init()
-
-	parserInstance.Parse()
-
-	words := <-parserInstance.Words
+	words := parserInstance.Parse()
 
 	fileUrl := cCtx.String("file")
-
 	file, err := os.Create(fileUrl)
 
 	if err != nil {
