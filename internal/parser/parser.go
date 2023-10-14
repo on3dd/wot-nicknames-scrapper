@@ -9,13 +9,11 @@ import (
 )
 
 type Parser struct {
-	Words     chan []string
 	collector *colly.Collector
 }
 
 func Init() *Parser {
 	return &Parser{
-		Words: make(chan []string, 1),
 		collector: colly.NewCollector(
 			colly.AllowedDomains("conterfrag.ru"),
 		),
